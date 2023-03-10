@@ -1,1 +1,3 @@
 # Multinational-Retail-Data-Centralisation
+
+In this project we are to perform data analytics on sales data of an organisation. The data is spread across many different data sources making it not easily accessible or analysable by current members of the team. In an effort to become more data-driven, we would like to make its sales data accessible from one centralised location. You will then query the database to get up-to-date metrics for the business.
