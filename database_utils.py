@@ -3,6 +3,7 @@ from yaml.loader import SafeLoader
 
 class DatabaseConnector:
     
+    @staticmethod
     def read_db_creds():
         file_path = "db_creds.yaml"
 
