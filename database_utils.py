@@ -25,3 +25,11 @@ class DatabaseConnector:
         #creating the engine
         db_engine = create_engine(db_url)
         return db_engine
+    
+
+    def list_db_tables(self):
+        db_engine = self.init_db_engine()
+        db_insp = inspect(db_engine)
+        db_table_list = db_insp.get_table_names()
+
+        return db_table_list
