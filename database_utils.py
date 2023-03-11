@@ -10,7 +10,7 @@ class DatabaseConnector:
 
     def read_db_creds(self):
         with open(self.file_path) as f:
-            db_cred_dict = yaml.load(f, loader=SafeLoader)
+            db_cred_dict = yaml.load(f, Loader=SafeLoader)
 
         return db_cred_dict
 
