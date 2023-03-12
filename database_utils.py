@@ -33,3 +33,8 @@ class DatabaseConnector:
         db_table_list = db_insp.get_table_names()
 
         return db_table_list
+    
+
+    def upload_to_db(self, data_frame, table_name):
+        sql_engine = create_engine('postgresql+psycopg2://postgres:Blackmoon_16@localhost/Sales_Data')
+        data_frame.to_sql(table_name, sql_engine, if_exists='replace', index=False)
