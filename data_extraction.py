@@ -23,6 +23,6 @@ class DataExtractor:
     @staticmethod
     def retrieve_pdf_data(pdf_path):
         dfs = tabula.read_pdf(pdf_path, stream=True, pages='all')
-        concat_df = pd.concat(dfs)
+        concat_df = pd.concat(dfs, ignore_index=True)
 
         return concat_df
