@@ -72,7 +72,62 @@ class DataCleaning:
 
         return users_df
     
+    @staticmethod
+    def clean_card_data(concat_df):
+        #Checking NULL values
+        print("Checking for NULL values:")
+        print("--------------------------")
 
+        for col in concat_df.columns:
+            indices = concat_df.loc[concat_df[col] == "NULL"].index.tolist()
+
+            if len(indices) != 0:
+                for index in indices:
+                    concat_df = concat_df.drop(index)
+                    #print(f"Dropping row: {index+1} of column: {col}")
+                    
+                print(f"Number of rows dropped for NULL in column '{col}' : {len(indices)}")
+            
+            else:
+                print(f"No null values present in column '{col}'")
+            
+        print("\n")
+
+        #Checking errors in dates
+        print("Checking for invalid dates:")
+        print("----------------------------")
+
+        for col_name in ['expiry_date', 'date_payment_confirmed']:
+
+            if col_name == 'expiry_date':
+                df_date_format = pd.to_datetime(concat_df[col_name], format='%m/%y', errors='coerce')
+                df_date_format_series = pd.Series(df_date_format.isna())
+                
+                indices = df_date_format_series[df_date_format_series].index.tolist()
+                indices_card_num = concat_df.loc[indices, 'card_number'].tolist()
+
+                for card_num in indices_card_num:
+                    concat_df = concat_df.drop(concat_df.loc[concat_df['card_number'] == card_num].index)
+
+                print(f"Number of rows dropped for invlaid dates in {col_name} : {len(indices_card_num)}")
+
+            else:
+                df_date_format = pd.to_datetime(concat_df[col_name], format='%Y-%m-%d', errors='coerce')
+                df_date_format_series = pd.Series(df_date_format.isna())
+                
+                indices = df_date_format_series[df_date_format_series].index.tolist()
+                indices_card_num = concat_df.loc[indices, 'card_number'].tolist()
+
+                for card_num in indices_card_num:
+                    concat_df = concat_df.drop(concat_df.loc[concat_df['card_number'] == card_num].index)
+
+                print(f"Number of rows dropped for invlaid dates in {col_name} : {len(indices_card_num)}")
+                
+            print("\n")
+
+        return concat_df
+    
+    
 
 #Testing the code
 '''
