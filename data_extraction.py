@@ -1,6 +1,7 @@
 import pandas as pd
 import yaml
 import requests
+import warnings
 from yaml.loader import SafeLoader
 from sqlalchemy import create_engine, MetaData, inspect, text
 
@@ -38,4 +39,21 @@ class DataExtractor:
         #print(f"Number of Stores: {num_stores_dict['number_stores']}")
 
         return num_stores_dict['number_stores']
+
+
+    @staticmethod
+    def retrieve_stores_data(retrieve_store_endpoint):
+        warnings.simplefilter(action='ignore', category=FutureWarning)
+
+        for store_number in range(451):
+            store_data = requests.get(retrieve_store_endpoint+str(store_number), headers={'x-api-key': 'yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX'})
+            if store_number == 0:
+                stores_df = pd.DataFrame(store_data.json(), index=[0])
+
+            else:
+                stores_df = stores_df.append(pd.DataFrame(store_data.json(), index=[0]), ignore_index=True)
+                
+
+        return stores_df
+
 
