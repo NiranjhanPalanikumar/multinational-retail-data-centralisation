@@ -1,5 +1,6 @@
 import pandas as pd
 import yaml
+import datetime
 from yaml.loader import SafeLoader
 from sqlalchemy import create_engine, MetaData, inspect, text
 
@@ -118,10 +119,24 @@ class DataCleaning:
                 indices = df_date_format_series[df_date_format_series].index.tolist()
                 indices_card_num = concat_df.loc[indices, 'card_number'].tolist()
 
-                for card_num in indices_card_num:
-                    concat_df = concat_df.drop(concat_df.loc[concat_df['card_number'] == card_num].index)
+                for num in indices_card_num:
+                    #print(concat_df.loc[concat_df['card_number'] == num])
+                    values_split = concat_df.loc[concat_df['card_number'] == num, 'date_payment_confirmed'].iloc[0].split(' ')
+                    
+                    for value in values_split:
+                        if len(value) == 2:
+                            day_value = value
+                        elif len(value) == 4 and value.isnumeric() == True:
+                            year_value = value
+                        else:
+                            month_value = value
 
-                print(f"Number of rows dropped for invlaid dates in {col_name} : {len(indices_card_num)}")
+
+                    month_number = '{:02d}'.format(datetime.datetime.strptime(month_value, '%B').month)
+                    final_date = year_value + '-' + str(month_number) + '-' + day_value
+
+                    print(f"Changing {concat_df.loc[concat_df['card_number'] == num, 'date_payment_confirmed'].iloc[0]} to {final_date}")
+                    concat_df.loc[concat_df['card_number'] == num, 'date_payment_confirmed'] = final_date
                 
             print("\n")
 
