@@ -1,5 +1,6 @@
 import pandas as pd
 import yaml
+import requests
 from yaml.loader import SafeLoader
 from sqlalchemy import create_engine, MetaData, inspect, text
 
@@ -26,3 +27,15 @@ class DataExtractor:
         concat_df = pd.concat(dfs, ignore_index=True)
 
         return concat_df
+    
+
+    @staticmethod
+    def list_number_of_stores(endpoint_path, header_details):
+        num_stores_req = requests.get(endpoint_path, headers=header_details)
+        num_stores_dict = num_stores_req.json()
+
+        print(f"Status: {num_stores_dict['statusCode']}")
+        #print(f"Number of Stores: {num_stores_dict['number_stores']}")
+
+        return num_stores_dict['number_stores']
+
