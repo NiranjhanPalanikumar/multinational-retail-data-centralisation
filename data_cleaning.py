@@ -142,6 +142,59 @@ class DataCleaning:
 
         return concat_df
     
+
+    @staticmethod
+    def clean_store_data(stores_df):
+        print("Checking for Non-Numeric values in numeric columns:")
+        print("-----------------------------------------------------")
+
+        for col_name in ['longitude', 'staff_numbers', 'latitude']:
+
+            stores_df_col = pd.to_numeric(stores_df[col_name], errors='coerce')
+            stores_df_col_series = pd.Series(stores_df_col.isna())
+
+            indices = stores_df_col_series[stores_df_col_series].index.tolist()
+            indices_index = stores_df.loc[indices, 'index'].tolist()
+
+            for index_num in indices_index:
+                stores_df = stores_df.drop(stores_df.loc[stores_df['index'] == index_num].index)
+
+            print(f"Number of rows dropped for invlaid values in column {col_name}  : {len(indices_index)}")
+            print('\n')
+
+        print("Checking for Invalid Dates:")
+        print("-----------------------------")
+
+        stores_df_date_format = pd.to_datetime(stores_df['opening_date'], format='%Y-%m-%d', errors='coerce')
+        stores_df_date_format_series = pd.Series(stores_df_date_format.isna())
+
+        indices = stores_df_date_format_series[stores_df_date_format_series].index.tolist()
+        indices_index = stores_df.loc[indices, 'index'].tolist()
+
+        #print(indices_card_num)
+
+        for index in indices_index:
+            #print(stores_df.loc[stores_df['index'] == num, 'opening_date'])
+            values_split = stores_df.loc[stores_df['index'] == index, 'opening_date'].iloc[0].split(' ')
+
+            for value in values_split:
+                if len(value) == 2:
+                    day_value = value
+                elif len(value) == 4 and value.isnumeric() == True:
+                    year_value = value
+                else:
+                    month_value = value
+
+            month_number = '{:02d}'.format(datetime.datetime.strptime(month_value, '%B').month)
+            final_date = year_value + '-' + str(month_number) + '-' + day_value
+
+            print(f"Changing {stores_df.loc[stores_df['index'] == index, 'opening_date'].iloc[0]} to {final_date}")
+            stores_df.loc[stores_df['index'] == index, 'opening_date'] = final_date
+
+        return stores_df
+
+
+    
     
 
 #Testing the code
