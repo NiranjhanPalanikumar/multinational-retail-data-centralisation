@@ -2,6 +2,8 @@ import pandas as pd
 import yaml
 import requests
 import warnings
+import boto3
+from io import BytesIO
 from yaml.loader import SafeLoader
 from sqlalchemy import create_engine, MetaData, inspect, text
 
@@ -55,5 +57,19 @@ class DataExtractor:
                 
 
         return stores_df
+    
+
+    @staticmethod
+    def extract_from_s3(url_endpoint):
+        s3 = boto3.client('s3')
+        
+        bucket_name, key = url_endpoint.split('://')[1].split('/',1)
+        response = s3.get_object(Bucket=bucket_name, Key=key)
+        content = response['Body'].read()
+        csv_file = BytesIO(content)
+
+        products_df = pd.read_csv(csv_file)
+
+        return products_df
 
 
