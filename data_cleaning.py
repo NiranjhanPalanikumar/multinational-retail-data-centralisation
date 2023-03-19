@@ -330,8 +330,29 @@ class DataCleaning:
         return products_df
 
 
-    
+    @staticmethod
+    def clean_orders_data(orders_df):
+            
+        print("Removing columns 'first_name', 'last_name', and '1':")
+        print("----------------------------------------------------")
 
+        orders_df = orders_df.drop(columns=['first_name', 'last_name', '1'])
+        print("Removed column: 'first_name'")
+        print("Removed column: 'last_name'")
+        print("Removed column: '1'")
+        print('\n')
+
+        print("Checking for NULL values:")
+        print("-------------------------")
+        
+        for col in orders_df.columns:
+            print(f"Column '{col}': {orders_df[col].isnull().any()}")
+
+        print('\n')
+
+        return orders_df
+
+    
 #Testing the code
 '''
 db_connc = DatabaseConnector()
