@@ -351,8 +351,41 @@ class DataCleaning:
         print('\n')
 
         return orders_df
-
     
+
+    @staticmethod
+    def clean_dates_data(date_df):
+        print("Checking for NULL values:")
+        print("--------------------------")
+        null_indices = date_df.loc[date_df['date_uuid'] == 'NULL'].index.tolist()
+        date_df = date_df.drop(null_indices)
+
+        print(f"Removed {len(null_indices)} rows having NULL values")
+        print('\n')
+
+        print("Checking for Invalid timestamps:")
+        print("---------------------------------")
+        date_df_date_format = pd.to_datetime(date_df['timestamp'], format='%H:%M:%S', errors='coerce')
+        date_df_date_format_series = pd.Series(date_df_date_format.isna())
+
+        indices = date_df_date_format_series[date_df_date_format_series].index.tolist()
+        indices_index = date_df.loc[indices, 'date_uuid'].tolist()
+        for index_num in indices_index:
+            date_df = date_df.drop(date_df.loc[date_df['date_uuid'] == index_num].index)
+
+        print(f"Removed {len(indices_index)} rows having invalid timestamps")
+        print('\n')
+
+        print("Checking for Invalid dates:")
+        print("---------------------------")
+        date_df['date'] = pd.to_datetime(date_df[['year', 'month', 'day']], errors='coerce')
+        invalid_dates = date_df[date_df['date'].isnull()]
+
+        print(f"Number of invalid dates: {len(invalid_dates)}")
+
+        return date_df
+    
+  
 #Testing the code
 '''
 db_connc = DatabaseConnector()
