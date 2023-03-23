@@ -157,11 +157,18 @@ class DataCleaning:
             indices_index = stores_df.loc[indices, 'index'].tolist()
 
             for index_num in indices_index:
-                stores_df = stores_df.drop(stores_df.loc[stores_df['index'] == index_num].index)
+                if col_name == 'latitude' and index_num == 0:
+                    stores_df.loc[index_num, 'latitude'] = 'N/A'
+                elif index_num != 0:
+                    stores_df = stores_df.drop(stores_df.loc[stores_df['index'] == index_num].index)
 
-            print(f"Number of rows dropped for invlaid values in column {col_name}  : {len(indices_index)}")
+            if col_name == 'staff_numbers':
+                print(f"Number of rows dropped for invlaid values in column {col_name}  : {len(indices_index)}")
+            else:
+                print(f"Number of rows dropped for invlaid values in column {col_name}  : {len(indices_index) - 1}")
             print('\n')
 
+            
         print("Checking for Invalid Dates:")
         print("-----------------------------")
 
