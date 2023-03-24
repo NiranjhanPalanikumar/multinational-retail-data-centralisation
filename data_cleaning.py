@@ -286,7 +286,7 @@ class DataCleaning:
             #print(f"{i} -> {products_df.loc[i, 'weight']}")
 
             while products_df.loc[i, 'weight'][ind].isalpha() == True:
-                unit = [products_df.loc[0, 'weight'][ind]] + unit
+                unit = [products_df.loc[i, 'weight'][ind]] + unit
                 ind -= 1
 
             unit = ''.join(unit)
@@ -325,6 +325,13 @@ class DataCleaning:
                 value = float(products_df.loc[i, 'weight'][:(len(products_df.loc[i, 'weight'])+ind+1)])
                 value_new = str(value/1000) + 'kg'
                 #print(f"{value} {unit} -> {value_new} kg")
+
+                products_df.loc[i, 'weight'] = value_new
+                count += 1
+
+            elif unit == 'oz':
+                value = float(products_df.loc[i, 'weight'][:(len(products_df.loc[i, 'weight'])+ind+1)])
+                value_new = str((value*28.413)/1000) + 'kg'
 
                 products_df.loc[i, 'weight'] = value_new
                 count += 1
