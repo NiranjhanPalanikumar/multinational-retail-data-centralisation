@@ -140,6 +140,35 @@ class DataCleaning:
                 
             print("\n")
 
+        #Checking errors in card_number
+        print("Checking for invalid card numbers:")
+        print("-----------------------------------")
+
+        col_name = 'card_number'
+
+        df_card_num_format = pd.to_numeric(concat_df[col_name], errors='coerce')
+        df_card_num_format_series = pd.Series(df_card_num_format.isna())
+
+        indices = df_card_num_format_series[df_card_num_format_series].index.tolist()
+        indices_card_num = concat_df.loc[indices, 'card_number'].tolist()
+
+
+        for card_num in indices_card_num:
+            unit = []
+            ind = -1
+            #print(f"{i} -> {products_df.loc[i, 'weight']}")
+
+            while card_num[ind].isnumeric() == True:
+                unit = [card_num[ind]] + unit
+                ind -= 1
+
+            unit = ''.join(unit)
+            concat_df.loc[concat_df['card_number']==card_num, 'card_number'] = unit
+            
+            print(f"Changed '{card_num}'  ->  {unit}")
+
+        print('\n')
+
         return concat_df
     
 
